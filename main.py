@@ -11,8 +11,8 @@ boll_center_x = int(screen_w / 2)
 boll_center_y = screen_h - 30
 boll_dx = 1
 boll_dy = -1
-boll_speed = 10
-boll_r = 7
+boll_speed = 12
+boll_r = 8
 old_center_x = screen_w / 2
 
 
@@ -58,7 +58,7 @@ def work(img):
         pass
     cv2.rectangle(img, (center - board_w, screen_h - 20), (center + board_w, screen_h - 20), (255, 255, 255), 4)
     calc_boll_center(center - board_w, center + board_w)
-    cv2.circle(img, (boll_center_x, boll_center_y), 7, (255, 255, 255))
+    cv2.circle(img, (boll_center_x, boll_center_y), 7, (255, 255, 255), -1)
     return img
 
 
