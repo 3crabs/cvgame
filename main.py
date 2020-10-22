@@ -13,6 +13,7 @@ boll_dx = 1
 boll_dy = -1
 boll_speed = 10
 boll_r = 7
+old_center_x = screen_w / 2
 
 
 def find_faces(img):
@@ -48,14 +49,16 @@ def calc_boll_center(left, right):
 
 
 def work(img):
+    global old_center_x
+    center = old_center_x
     try:
         (x, y, w, h) = find_faces(img)[0]
-        center = int(x + w / 2)
-        cv2.rectangle(img, (center - board_w, screen_h - 20), (center + board_w, screen_h - 20), (255, 255, 255), 4)
-        calc_boll_center(center - board_w, center + board_w)
-        cv2.circle(img, (boll_center_x, boll_center_y), 7, (255, 255, 255))
+        old_center_x = center = int(x + w / 2)
     except IndexError as _:
         pass
+    cv2.rectangle(img, (center - board_w, screen_h - 20), (center + board_w, screen_h - 20), (255, 255, 255), 4)
+    calc_boll_center(center - board_w, center + board_w)
+    cv2.circle(img, (boll_center_x, boll_center_y), 7, (255, 255, 255))
     return img
 
 
