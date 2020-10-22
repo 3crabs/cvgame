@@ -8,7 +8,7 @@ docker build -t cvgame .
 docker run cvgame
 ```
 
-## Для тех кто не обломился и установил питон
+## Для тех кто не обломился и установил python3
 ```
 python3 -m venv venv
 source venv/bin/activate
