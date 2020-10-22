@@ -16,6 +16,7 @@ boll_dy = -1
 boll_speed = 12
 boll_r = 8
 old_center_x = screen_w / 2
+boom = False
 
 
 def find_faces(img):
@@ -36,7 +37,7 @@ def norm(a, min_a, max_a):
 
 
 def calc_boll_center(left, right):
-    global boll_center_x, boll_center_y, boll_dx, boll_dy
+    global boll_center_x, boll_center_y, boll_dx, boll_dy, boom
     boll_center_x = int(boll_center_x + boll_speed * boll_dx)
     boll_center_y = int(boll_center_y + boll_speed * boll_dy)
 
@@ -52,10 +53,17 @@ def calc_boll_center(left, right):
         boll_dy = -boll_dy
         boll_center_y = boll_r
 
-    if boll_center_y > screen_h - 20 - boll_r and (left < boll_center_x < right):
-        d = (boll_center_x - old_center_x) / board_w
-        boll_dy = -math.cos(d)
-        boll_dx = math.sin(d)
+    if boll_center_y > screen_h - 20 - boll_r and left < boll_center_x < right:
+        if not boom:
+            boom = True
+            d = (boll_center_x - old_center_x) / board_w
+            boll_dy = -boll_dy
+            boll_dx += d
+            mod_d = math.sqrt(boll_dx ** 2 + boll_dy ** 2)
+            boll_dy /= mod_d
+            boll_dx /= mod_d
+    else:
+        boom = False
 
 
 def work(img):
