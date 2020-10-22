@@ -10,7 +10,7 @@ docker run cvgame
 
 ## Для тех кто не обломился и установил питон
 ```
-python -m venv venv
+python3 -m venv venv
 source venv/bin/active
 pip install -r requirements.txt
 python main.py
