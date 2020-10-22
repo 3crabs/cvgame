@@ -2,12 +2,6 @@
 
 Игра арканойд с управлением головой, а не ж...
 
-## Для тех кто умеет в docker
-```
-docker build -t cvgame .
-docker run cvgame
-```
-
 ## Для тех кто не обломился и установил python3
 ```
 python3 -m venv venv
