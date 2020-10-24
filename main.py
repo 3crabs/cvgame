@@ -10,7 +10,8 @@ screen_w = 640
 screen_h = 480
 
 boll = Boll(screen_w, screen_h)
-board = Board(screen_w)
+board_bottom = Board(screen_w)
+board_top = Board(screen_w)
 
 boom = False
 
@@ -44,7 +45,7 @@ def calc_boll_center(left, right):
     if boll.y > screen_h - 20 - boll.r and left < boll.x < right:
         if not boom:
             boom = True
-            d = (boll.x - board.old_center_x) / board.r
+            d = (boll.x - board_bottom.old_center_x) / board_bottom.r
             boll.dy = -boll.dy
             boll.dx += d
             mod_d = math.sqrt(boll.dx ** 2 + boll.dy ** 2)
@@ -55,15 +56,19 @@ def calc_boll_center(left, right):
 
 
 def work(img):
-    global board
-    center = board.old_center_x
+    global board_bottom
+    board_bottom.center = board_bottom.old_center_x
     try:
         (x, y, w, h) = find_faces(img)[0]
-        board.old_center_x = center = int(x + w / 2)
+        board_bottom.old_center_x = board_bottom.center = int(x + w / 2)
     except IndexError as _:
         pass
-    cv2.rectangle(img, (center - board.r, screen_h - 20), (center + board.r, screen_h - 20), (255, 255, 255), 4)
-    calc_boll_center(center - board.r, center + board.r)
+    cv2.rectangle(img, (board_bottom.center - board_bottom.r, screen_h - 20),
+                  (board_bottom.center + board_bottom.r, screen_h - 20),
+                  (255, 255, 255), 4)
+    cv2.rectangle(img, (board_bottom.center - board_bottom.r, 20), (board_bottom.center + board_bottom.r, 20),
+                  (255, 255, 255), 4)
+    calc_boll_center(board_bottom.center - board_bottom.r, board_bottom.center + board_bottom.r)
     cv2.circle(img, (boll.x, boll.y), 7, (255, 255, 255), -1)
     return img
 
