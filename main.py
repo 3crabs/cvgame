@@ -89,6 +89,7 @@ def run():
         if boll.y > screen_h or boll.y < 0:
             print('the end...')
             break
+    cv2.putText(img, 'Game over.', (50, 100), font, fontScale, (255, 255, 255))
     cv2.imshow(window_name, img)
     cv2.waitKey(10000)
 
