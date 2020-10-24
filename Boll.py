@@ -1,4 +1,15 @@
 import random
+from threading import Thread
+
+from pydub import AudioSegment
+from pydub.playback import play
+
+filename = 'assets/boom.mp3'
+song = AudioSegment.from_mp3(filename)
+
+
+def music():
+    play(song)
 
 
 class Boll:
@@ -16,3 +27,4 @@ class Boll:
     def boom(self):
         self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.count += 1
+        Thread(target=music, args=()).start()
