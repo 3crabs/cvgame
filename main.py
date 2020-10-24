@@ -16,43 +16,37 @@ board_top = Board(screen_w)
 boom = False
 
 
-def norm(a, min_a, max_a):
-    ret = a
-    if ret < min_a:
-        ret = min_a
-    if ret > max_a:
-        ret = max_a
-    return ret
-
-
 def calc_boll_center(left, right):
     global boll, boom
     boll.x = int(boll.x + boll.speed * boll.dx)
     boll.y = int(boll.y + boll.speed * boll.dy)
 
+    # правая стенка
     if boll.x > screen_w - boll.r:
         boll.dx = -boll.dx
         boll.x = screen_w - boll.r
 
+    # левая стенка
     if boll.x < boll.r:
         boll.dx = -boll.dx
         boll.x = boll.r
 
-    if boll.y < boll.r:
-        boll.dy = -boll.dy
-        boll.y = boll.r
+    if boll.dy < 0 and boll.y < boll.r + 20 and left < boll.x < right:
+        boll.y = boll.r + 20
+        top_bottom_boom(board_top)
 
-    if boll.y > screen_h - 20 - boll.r and left < boll.x < right:
-        if not boom:
-            boom = True
-            d = (boll.x - board_bottom.old_center_x) / board_bottom.r
-            boll.dy = -boll.dy
-            boll.dx += d
-            mod_d = math.sqrt(boll.dx ** 2 + boll.dy ** 2)
-            boll.dy /= mod_d
-            boll.dx /= mod_d
-    else:
-        boom = False
+    if boll.dy > 0 and boll.y > screen_h - 20 - boll.r and left < boll.x < right:
+        boll.y = screen_h - 20 - boll.r
+        top_bottom_boom(board_bottom)
+
+
+def top_bottom_boom(board):
+    d = (boll.x - board.old_center_x) / board.r
+    boll.dy = -boll.dy
+    boll.dx += d
+    mod_d = math.sqrt(boll.dx ** 2 + boll.dy ** 2)
+    boll.dy /= mod_d
+    boll.dx /= mod_d
 
 
 def work(img):
@@ -82,7 +76,7 @@ def run():
         cv2.imshow("cvgame", img)
         if cv2.waitKey(10) == 27:  # Клавиша Esc
             break
-        if boll.y > screen_h:
+        if boll.y > screen_h or boll.y < 0:
             print('the end...')
             break
 
