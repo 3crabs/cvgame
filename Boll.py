@@ -11,6 +11,8 @@ class Boll:
         self.x = int(screen_w / 2)
         self.y = screen_h - 30
         self.color = (255, 255, 255)
+        self.count = 0
 
-    def new_color(self):
+    def boom(self):
         self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.count += 1

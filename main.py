@@ -1,6 +1,7 @@
 import math
 import random
 
+import screeninfo
 from cv2 import cv2
 
 from Board import Board
@@ -29,7 +30,7 @@ def calc_boll_center(left, right):
     if boll.x < boll.r:
         boll.dx = -boll.dx
         boll.x = boll.r
-        boll.new_color()
+        boll.boom()
 
     if boll.dy < 0 and boll.y < boll.r + 20 and left < boll.x < right:
         boll.y = boll.r + 20
@@ -47,7 +48,7 @@ def top_bottom_boom(board):
     mod_d = math.sqrt(boll.dx ** 2 + boll.dy ** 2)
     boll.dy /= mod_d
     boll.dx /= mod_d
-    boll.new_color()
+    boll.boom()
 
 
 def work(img):
@@ -58,12 +59,10 @@ def work(img):
         board.old_center_x = board.center = int(x + w / 2)
     except IndexError as _:
         pass
-    cv2.rectangle(img, (board.center - board.r, screen_h - 20),
-                  (board.center + board.r, screen_h - 20),
-                  board.color, 4)
-    cv2.rectangle(img, (board.center - board.r, 20), (board.center + board.r, 20),
-                  board.color, 4)
     calc_boll_center(board.center - board.r, board.center + board.r)
+
+    cv2.rectangle(img, (board.center - board.r, screen_h - 20), (board.center + board.r, screen_h - 20), board.color, 4)
+    cv2.rectangle(img, (board.center - board.r, 20), (board.center + board.r, 20), board.color, 4)
     cv2.circle(img, (boll.x, boll.y), boll.r, (255, 255, 255), -1)
     cv2.circle(img, (boll.x, boll.y), boll.r - 2, boll.color, -1)
     return img
@@ -71,16 +70,27 @@ def work(img):
 
 def run():
     cap = cv2.VideoCapture(0)
+    screen = screeninfo.get_monitors()[0]
+    window_name = "cvgame"
+    cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
+    cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
+    cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    org = (50, 50)
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    fontScale = 1
     while True:
         ret, img = cap.read()
         img = cv2.flip(img, 1)
+        cv2.putText(img, str(boll.count), org, font, fontScale, (255, 255, 255))
         img = work(img)
-        cv2.imshow("cvgame", img)
+        cv2.imshow(window_name, img)
         if cv2.waitKey(10) == 27:  # Клавиша Esc
             break
         if boll.y > screen_h or boll.y < 0:
             print('the end...')
             break
+    cv2.imshow(window_name, img)
+    cv2.waitKey(10000)
 
 
 if __name__ == '__main__':
