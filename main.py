@@ -4,8 +4,7 @@ from cv2 import cv2
 
 from Board import Board
 from Boll import Boll
-
-faceCascade = cv2.CascadeClassifier('Cascades/haarcascade_frontalface_default.xml')
+from find_faces import find_faces
 
 screen_w = 640
 screen_h = 480
@@ -14,14 +13,6 @@ boll = Boll(screen_w, screen_h)
 board = Board(screen_w)
 
 boom = False
-
-
-def find_faces(img):
-    return faceCascade.detectMultiScale(
-        img,
-        scaleFactor=1.2,
-        minNeighbors=5,
-        minSize=(20, 20))
 
 
 def norm(a, min_a, max_a):
