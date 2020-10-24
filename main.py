@@ -24,7 +24,7 @@ def calc_boll_center(left, right):
     if boll.x > screen_w - boll.r:
         boll.dx = -boll.dx
         boll.x = screen_w - boll.r
-        boll.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        boll.boom()
 
     # левая стенка
     if boll.x < boll.r:
