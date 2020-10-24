@@ -2,19 +2,18 @@ import math
 
 from cv2 import cv2
 
+from Board import Board
 from Boll import Boll
 
 faceCascade = cv2.CascadeClassifier('Cascades/haarcascade_frontalface_default.xml')
 
-gray_h = 90
-
 screen_w = 640
 screen_h = 480
-board_w = 100
-board_old_center_x = screen_w / 2
-boom = False
 
 boll = Boll(screen_w, screen_h)
+board = Board(screen_w)
+
+boom = False
 
 
 def find_faces(img):
@@ -54,7 +53,7 @@ def calc_boll_center(left, right):
     if boll.y > screen_h - 20 - boll.r and left < boll.x < right:
         if not boom:
             boom = True
-            d = (boll.x - board_old_center_x) / board_w
+            d = (boll.x - board.old_center_x) / board.r
             boll.dy = -boll.dy
             boll.dx += d
             mod_d = math.sqrt(boll.dx ** 2 + boll.dy ** 2)
@@ -65,15 +64,15 @@ def calc_boll_center(left, right):
 
 
 def work(img):
-    global board_old_center_x
-    center = board_old_center_x
+    global board
+    center = board.old_center_x
     try:
         (x, y, w, h) = find_faces(img)[0]
-        board_old_center_x = center = int(x + w / 2)
+        board.old_center_x = center = int(x + w / 2)
     except IndexError as _:
         pass
-    cv2.rectangle(img, (center - board_w, screen_h - 20), (center + board_w, screen_h - 20), (255, 255, 255), 4)
-    calc_boll_center(center - board_w, center + board_w)
+    cv2.rectangle(img, (center - board.r, screen_h - 20), (center + board.r, screen_h - 20), (255, 255, 255), 4)
+    calc_boll_center(center - board.r, center + board.r)
     cv2.circle(img, (boll.x, boll.y), 7, (255, 255, 255), -1)
     return img
 
@@ -84,7 +83,7 @@ def run():
         ret, img = cap.read()
         img = cv2.flip(img, 1)
         img = work(img)
-        cv2.imshow("camera", img)
+        cv2.imshow("cvgame", img)
         if cv2.waitKey(10) == 27:  # Клавиша Esc
             break
         if boll.y > screen_h:
