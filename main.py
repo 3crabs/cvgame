@@ -1,4 +1,5 @@
 import math
+import random
 
 from cv2 import cv2
 
@@ -10,14 +11,11 @@ screen_w = 640
 screen_h = 480
 
 boll = Boll(screen_w, screen_h)
-board_bottom = Board(screen_w)
-board_top = Board(screen_w)
-
-boom = False
+board = Board(screen_w)
 
 
 def calc_boll_center(left, right):
-    global boll, boom
+    global boll
     boll.x = int(boll.x + boll.speed * boll.dx)
     boll.y = int(boll.y + boll.speed * boll.dy)
 
@@ -25,19 +23,21 @@ def calc_boll_center(left, right):
     if boll.x > screen_w - boll.r:
         boll.dx = -boll.dx
         boll.x = screen_w - boll.r
+        boll.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
     # левая стенка
     if boll.x < boll.r:
         boll.dx = -boll.dx
         boll.x = boll.r
+        boll.new_color()
 
     if boll.dy < 0 and boll.y < boll.r + 20 and left < boll.x < right:
         boll.y = boll.r + 20
-        top_bottom_boom(board_top)
+        top_bottom_boom(board)
 
     if boll.dy > 0 and boll.y > screen_h - 20 - boll.r and left < boll.x < right:
         boll.y = screen_h - 20 - boll.r
-        top_bottom_boom(board_bottom)
+        top_bottom_boom(board)
 
 
 def top_bottom_boom(board):
@@ -47,23 +47,25 @@ def top_bottom_boom(board):
     mod_d = math.sqrt(boll.dx ** 2 + boll.dy ** 2)
     boll.dy /= mod_d
     boll.dx /= mod_d
+    boll.new_color()
 
 
 def work(img):
-    global board_bottom
-    board_bottom.center = board_bottom.old_center_x
+    global board
+    board.center = board.old_center_x
     try:
         (x, y, w, h) = find_faces(img)[0]
-        board_bottom.old_center_x = board_bottom.center = int(x + w / 2)
+        board.old_center_x = board.center = int(x + w / 2)
     except IndexError as _:
         pass
-    cv2.rectangle(img, (board_bottom.center - board_bottom.r, screen_h - 20),
-                  (board_bottom.center + board_bottom.r, screen_h - 20),
-                  (255, 255, 255), 4)
-    cv2.rectangle(img, (board_bottom.center - board_bottom.r, 20), (board_bottom.center + board_bottom.r, 20),
-                  (255, 255, 255), 4)
-    calc_boll_center(board_bottom.center - board_bottom.r, board_bottom.center + board_bottom.r)
-    cv2.circle(img, (boll.x, boll.y), 7, (255, 255, 255), -1)
+    cv2.rectangle(img, (board.center - board.r, screen_h - 20),
+                  (board.center + board.r, screen_h - 20),
+                  board.color, 4)
+    cv2.rectangle(img, (board.center - board.r, 20), (board.center + board.r, 20),
+                  board.color, 4)
+    calc_boll_center(board.center - board.r, board.center + board.r)
+    cv2.circle(img, (boll.x, boll.y), boll.r, (255, 255, 255), -1)
+    cv2.circle(img, (boll.x, boll.y), boll.r - 2, boll.color, -1)
     return img
 
 

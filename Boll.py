@@ -1,3 +1,6 @@
+import random
+
+
 class Boll:
 
     def __init__(self, screen_w: int, screen_h: int):
@@ -7,3 +10,7 @@ class Boll:
         self.speed = 15
         self.x = int(screen_w / 2)
         self.y = screen_h - 30
+        self.color = (255, 255, 255)
+
+    def new_color(self):
+        self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
