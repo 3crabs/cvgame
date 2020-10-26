@@ -1,5 +1,4 @@
 import math
-import random
 
 import screeninfo
 from cv2 import cv2
