@@ -10,6 +10,8 @@ from find_faces import find_faces
 screen_w = 640
 screen_h = 480
 
+speed_board = 3
+
 boll = Boll(screen_w, screen_h)
 board = Board(screen_w)
 
@@ -56,6 +58,9 @@ def work(img):
     try:
         (x, y, w, h) = find_faces(img)[0]
         board.old_center_x = board.center = int(x + w / 2)
+        board.center -= int(screen_w / 2)
+        board.center *= speed_board
+        board.center += int(screen_w / 2)
     except IndexError as _:
         pass
     calc_boll_center(board.center - board.r, board.center + board.r)
