@@ -11,3 +11,9 @@ python main.py
 ```
 
 ### ПС... Если у тебя не заработало, мне плевать
+
+### Ссылки
+#### opencv
+https://github.com/opencv
+#### Каскады Хаара
+https://github.com/opencv/opencv/tree/master/data/haarcascades
