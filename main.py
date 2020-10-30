@@ -10,7 +10,7 @@ from find_faces import find_faces
 screen_w = 640
 screen_h = 480
 
-speed_board = 3
+speed_board = 2
 
 boll = Boll(screen_w, screen_h)
 board = Board(screen_w)
@@ -35,14 +35,14 @@ def calc_boll_center(left, right):
 
     if boll.dy < 0 and boll.y < boll.r + 20 and left < boll.x < right:
         boll.y = boll.r + 20
-        top_bottom_boom(board)
+        top_bottom_boom()
 
     if boll.dy > 0 and boll.y > screen_h - 20 - boll.r and left < boll.x < right:
         boll.y = screen_h - 20 - boll.r
-        top_bottom_boom(board)
+        top_bottom_boom()
 
 
-def top_bottom_boom(board):
+def top_bottom_boom():
     d = (boll.x - board.old_center_x) / board.r
     boll.dy = -boll.dy
     boll.dx += d
